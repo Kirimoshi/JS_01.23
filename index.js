@@ -40,3 +40,26 @@ function makeDeepCopy(obj) {
 
   return innerDeepCopy(obj);
 }
+
+// Task 2
+function selectFromInterval(array, from, to) {
+  if (!Array.isArray(array)) {
+    throw new Error();
+  }
+  if (array.length === 0) {
+    throw new Error();
+  }
+  array.forEach((item) => {
+    if (typeof item !== 'number' || !Number.isFinite(item)) {
+      throw new Error();
+    }
+  });
+  if (!Number.isFinite(from) || !Number.isFinite(to)) {
+    throw new Error();
+  }
+  if (to < from) {
+    [from, to] = [to, from];
+  }
+  return array.filter((num) => (num >= from && num <= to));
+}
+
