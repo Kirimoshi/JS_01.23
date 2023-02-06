@@ -3,6 +3,9 @@ function doCalculationsTask1() {
   const queryUserInput = () => prompt('Please enter valid number', '5');
   const getFactorial = (num) => {
     let result = 1;
+    if (num === 0 || num === 1) {
+      return result;
+    }
     while (num !== 1) {
       result *= num;
       num -= 1;
@@ -27,30 +30,33 @@ function doCalculationsTask1() {
   const assertEven = (num) => {
     return num % 2 === 0;
   };
-  const getDelimiters = (num) => {
-    let delimiters = `${num}`;
+  const getDenominators = (num) => {
+    if (num === 0) {
+      return `any except for zero`;
+    }
+    let denominators = `${num}`;
     if (assertEven(num)) {
       for (let i = num / 2; i > 0; i--) {
         if (num % i === 0) {
-          delimiters += `, ${i}`;
+          denominators += `, ${i}`;
         }
       }
     } else {
       for (let i = num - 1; i > 0; i--) {
         if (num % i === 0) {
-          delimiters += `, ${i}`;
+          denominators += `, ${i}`;
         }
       }
     }
-    return delimiters;
+    return denominators;
   };
   const getResult = (validated) => {
     return `Number: ${validated}
-Factorial: ${getFactorial(validated)}
-Square: ${Math.pow(validated, 2)}
-isPrime: ${assertPrime(validated)}
-isEven: ${assertEven(validated)}
-Delimiters: ${getDelimiters(validated)}`
+            \nFactorial: ${getFactorial(validated)}
+            \nSquare: ${Math.pow(validated, 2)}
+            \nisPrime: ${assertPrime(validated)}           
+            \nisEven: ${assertEven(validated)}             
+            \nDenominators: ${getDenominators(validated)}`;
   };
   const printCalculationsResult = (result) => {
     console.log(result);
@@ -96,7 +102,7 @@ function printMatrixTask2() {
       return validateUserInputMatrixDimension(Number(queryUserInputMatrixDimension()));
     } else if (!(Number.isFinite(matDim) && Number.isInteger(matDim) && matDim >= 1 && matDim <= 9)) {
       console.log('Incorrect input!');
-      return validateUserInputMatrixDimension(queryUserInputMatrixDimension());
+      return validateUserInputMatrixDimension(Number(queryUserInputMatrixDimension()));
     } else {
       return matDim;
     }
