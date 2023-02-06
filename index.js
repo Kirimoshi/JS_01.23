@@ -37,7 +37,6 @@ function makeDeepCopy(obj) {
     }
     return obj;
   }
-
   return innerDeepCopy(obj);
 }
 
@@ -83,11 +82,11 @@ function createIterable(from, to) {
           return {
             done: false,
             value: this.current++,
-          }
+          };
         } else {
             return {
               done: true
-            }
+            };
           }
         }
       };
