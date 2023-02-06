@@ -17,9 +17,9 @@ function makeDeepCopy(obj) {
       case Array:
         return obj.map((item) => innerDeepCopy(item));
       case Map:
-        return new Map(Array.from(obj).map((item) => innerDeepCopy(item)));
+        return new Map(Array.from(obj, (item) => innerDeepCopy(item)));
       case Set:
-        return new Set(Array.from(obj).map((item) => innerDeepCopy(item)));
+        return new Set(Array.from(obj, (item) => innerDeepCopy(item)));
       case RegExp:
         return new RegExp(obj);
       case BigInt:
@@ -50,7 +50,7 @@ function selectFromInterval(array, from, to) {
     throw new Error();
   }
   array.forEach((item) => {
-    if (typeof item !== 'number' || !Number.isFinite(item)) {
+    if (!Number.isFinite(item)) {
       throw new Error();
     }
   });
@@ -63,3 +63,35 @@ function selectFromInterval(array, from, to) {
   return array.filter((num) => (num >= from && num <= to));
 }
 
+// Task 3
+function createIterable(from, to) {
+  if (from === null || to === null || !Number.isFinite(from) || !Number.isFinite(to) || to <= from) {
+    throw new Error();
+  }
+
+  const range = {
+    from: from,
+    to: to,
+  }
+
+  range[Symbol.iterator] = function () {
+    return {
+      current: this.from,
+      last: this.to,
+      next() {
+        if (this.current <= this.last) {
+          return {
+            done: false,
+            value: this.current++,
+          }
+        } else {
+            return {
+              done: true
+            }
+          }
+        }
+      };
+    };
+
+  return range;
+}
