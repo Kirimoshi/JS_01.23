@@ -5,7 +5,7 @@ function makeDeepCopy(obj) {
   }
 
   function innerDeepCopy(obj) {
-    switch (obj.constructor) {
+    switch (obj?.constructor) {
       case Boolean:
         return Boolean(obj);
       case Number:
