@@ -67,7 +67,7 @@ class RickAndMorty {
       throw new Error();
     }
   }
-  getCharacter(charId) {
+  getCharacter = (charId) => {
     RickAndMorty.validateArg(charId);
     return fetch(`https://rickandmortyapi.com/api/character/${charId}`)
       .then((res) => {
@@ -79,7 +79,7 @@ class RickAndMorty {
       })
       .catch((err) => null);
   }
-  async getEpisode(episodeId) {
+  getEpisode = async (episodeId) => {
     RickAndMorty.validateArg(episodeId);
     try {
       const response = await fetch(`https://rickandmortyapi.com/api/episode/${episodeId}`);
@@ -93,7 +93,3 @@ class RickAndMorty {
     }
   }
 }
-
-const character = new RickAndMorty();
-character.getCharacter(5).then((data) => console.log(data));
-character.getEpisode(5).then((data) => console.log(data));
