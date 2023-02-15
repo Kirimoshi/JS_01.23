@@ -1,7 +1,7 @@
 // Task 1
 
 class Stack {
-  constructor(maxStackLimit?) {
+  constructor(maxStackLimit) {
     if (maxStackLimit) {
       if (!(Number.isFinite(maxStackLimit) && Number.isInteger(maxStackLimit) && Number.isSafeInteger(maxStackLimit)
         && maxStackLimit > 0)) {
@@ -11,14 +11,106 @@ class Stack {
     } else {
       this.maxStackLimit = 10;
     }
+    this.storage = [];
+    this.size = 0;
+  }
+
+  push = (elem) => {
+    if (this.size === this.maxStackLimit) {
+      throw new Error('Limit exceeded');
+    }
+    this.storage[this.size] = elem;
+    this.size++;
+  }
+  pop = () => {
+    if (this.isEmpty()) {
+      throw new Error('Empty stack');
+    }
+    let removed;
+    [this.storage[this.size], removed] = [null, this.storage[this.size]];
+    this.size--;
+    return removed;
+  }
+  peek = () => {
+    if (this.isEmpty()) {
+      return null;
+    }
+    return this.storage[this.size];
+  }
+  isEmpty = () => {
+    return this.size === 0;
+  }
+  toArray = () => {
+    return this.storage;
+  }
+
+  static fromIterable(iterable) {
+    if (!iterable[Symbol.iterator]) {
+      throw new Error('Not iterable');
+    }
+
+    let maxStackLimit = 0;
+    for (const iterableElement of iterable) {
+      maxStackLimit++;
+    }
+    const newStack = new Stack(maxStackLimit);
+
+    for (const iterableElement of iterable) {
+      newStack.push(iterableElement);
+    }
+    return newStack;
   }
 }
 
+let arrayLike = { // есть индексы и свойство length => псевдомассив
+  0: "Hello",
+  1: "World",
+  length: 2
+};
+
+const array = [1,2,3];
+
+Stack.fromIterable(arrayLike);
+
 // Task 2
 
-class LinkedList {
-  constructor() {}
+class Node {
+  constructor(elem) {
+    this.value = elem;
+    this.next = null;
+  }
+}
 
+class LinkedList {
+  constructor() {
+    this.head = null;
+    // this.size = 0;
+  }
+
+  append = (elem) => {
+    if (this.head === null) {
+      this.head = new Node(elem);
+    }
+    this.head.next = new Node(elem);
+
+  }
+  prepend = (elem) => {
+
+  }
+  find = (elem) => {
+
+  }
+  toArray = () => {
+
+  }
+
+  static fromIterable(iterable) {
+    if (!iterable[Symbol.iterator]) {
+      throw new Error('Not iterable');
+    }
+
+
+  }
 }
 
 // Task 3
