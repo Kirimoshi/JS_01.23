@@ -26,8 +26,8 @@ class Stack {
     if (this.isEmpty()) {
       throw new Error('Empty stack');
     }
-    let removed;
-    [this.storage[this.size], removed] = [null, this.storage[this.size]];
+    const removed = this.storage[this.size - 1];
+    this.storage[this.size - 1] = null;
     this.size--;
     return removed;
   }
@@ -35,13 +35,19 @@ class Stack {
     if (this.isEmpty()) {
       return null;
     }
-    return this.storage[this.size];
+    return this.storage[this.size - 1];
   }
   isEmpty = () => {
     return this.size === 0;
   }
   toArray = () => {
-    return this.storage;
+    const arrayFromStack = [];
+    this.storage.forEach((elem) => {
+      if (elem !== null) {
+        arrayFromStack.push(elem);
+      }
+    })
+    return arrayFromStack;
   }
 
   static fromIterable(iterable) {
@@ -62,16 +68,6 @@ class Stack {
   }
 }
 
-let arrayLike = { // есть индексы и свойство length => псевдомассив
-  0: "Hello",
-  1: "World",
-  length: 2
-};
-
-const array = [1,2,3];
-
-Stack.fromIterable(arrayLike);
-
 // Task 2
 
 class Node {
@@ -84,24 +80,50 @@ class Node {
 class LinkedList {
   constructor() {
     this.head = null;
-    // this.size = 0;
   }
 
   append = (elem) => {
     if (this.head === null) {
       this.head = new Node(elem);
+      return;
     }
-    this.head.next = new Node(elem);
-
+    let lastNode = this.head;
+    while (lastNode.next) {
+      lastNode = lastNode.next;
+    }
+    lastNode.next = new Node(elem);
   }
   prepend = (elem) => {
-
+    const firstNode = this.head;
+    this.head = new Node(elem);
+    this.head.next = firstNode;
   }
   find = (elem) => {
-
+    if (this.head === null) {
+      return null;
+    }
+    let lastNode = this.head;
+    while (lastNode) {
+      if (lastNode.value === elem) {
+        return lastNode;
+      }
+      lastNode = lastNode.next;
+    }
+    return null;
   }
   toArray = () => {
-
+    if (this.head === null) {
+      return [];
+    }
+    let lastNode = this.head;
+    const arrayFromLinkedList = [];
+    let arrayIndex = 0;
+    while (lastNode) {
+      arrayFromLinkedList[arrayIndex] = lastNode.value;
+      lastNode = lastNode.next;
+      arrayIndex++;
+    }
+    return arrayFromLinkedList;
   }
 
   static fromIterable(iterable) {
@@ -109,7 +131,11 @@ class LinkedList {
       throw new Error('Not iterable');
     }
 
-
+    const newLinkedList = new LinkedList();
+    for (const iterableElement of iterable) {
+      newLinkedList.append(iterableElement);
+    }
+    return newLinkedList;
   }
 }
 
@@ -240,7 +266,7 @@ class Car {
       throw new Error('Invalid duration');
     }
     if (speed > this.#maxSpeed) {
-      throw new Error(`Car can't go this fast`);
+      throw new Error('Car can\'t go this fast');
     }
     if (!this.#isStarted) {
       throw new Error(`You have to start your car first`);
@@ -249,13 +275,13 @@ class Car {
       return this.#currentFuelVolume - (this.#fuelConsumption / 100 * speed * hours);
     }
     if (this.#currentFuelVolume === 0 || estimateEndFuelAmount() < 0) {
-      throw new Error(`You don't have enough fuel`);
+      throw new Error('You don\'t have enough fuel');
     }
     const estimateEndHealthValue = () => {
       return this.#health - (this.#damage / 100 * speed * hours);
     }
     if (this.#health === 0 || estimateEndHealthValue() <= 0) {
-      throw new Error(`Your car won’t make it`);
+      throw new Error('Your car won\'t make it');
     }
     const estimateMileage = () => {
       return this.#mileage + speed * hours;
@@ -268,7 +294,7 @@ class Car {
     if (this.#isStarted) {
       throw new Error('You have to shut down your car first');
     }
-    if (this.#currentFuelVolume === this.#maxFuelVolume) {
+    if (this.#currentFuelVolume !== this.#maxFuelVolume) {
       throw new Error(`You have to fill up your gas tank first`);
     }
     this.#health = 100;
