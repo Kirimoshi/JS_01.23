@@ -190,18 +190,17 @@ class Car {
     return this.#health;
   }
 
-
-  set brand(brandName) {
-    if (!(typeof brandName === 'string' && brandName.length >= 1 && brandName.length <= 50)) {
+  set brand(name) {
+    if (!(typeof name === 'string' && name.length >= 1 && name.length <= 50)) {
       throw new Error('Invalid brand name');
     }
-    this.#brand = brandName;
+    this.#brand = name;
   }
-  set model(modelName) {
-    if (!(typeof modelName === 'string' && modelName.length >= 1 && modelName.length <= 50)) {
+  set model(name) {
+    if (!(typeof name === 'string' && name.length >= 1 && name.length <= 50)) {
       throw new Error('Invalid model name');
     }
-    this.#model = modelName;
+    this.#model = name;
   }
   set yearOfManufacturing(year) {
     if (!(Number.isFinite(year) && year >= 1950 && year <= 2023)) {
@@ -209,23 +208,23 @@ class Car {
     }
     this.#yearOfManufacturing = year;
   }
-  set maxSpeed(maxSpeed) {
-    if (!(Number.isFinite(maxSpeed) && maxSpeed >= 100 && maxSpeed <= 330)) {
+  set maxSpeed(speed) {
+    if (!(Number.isFinite(speed) && speed >= 100 && speed <= 330)) {
       throw new Error('Invalid max speed');
     }
-    this.#maxSpeed = maxSpeed;
+    this.#maxSpeed = speed;
   }
-  set maxFuelVolume(maxFuelVolume) {
-    if (!(Number.isFinite(maxFuelVolume) && maxFuelVolume >= 20 && maxFuelVolume <= 100)) {
+  set maxFuelVolume(fuelVolume) {
+    if (!(Number.isFinite(fuelVolume) && fuelVolume >= 20 && fuelVolume <= 100)) {
       throw new Error('Invalid max fuel volume');
     }
-    this.#maxFuelVolume = maxFuelVolume;
+    this.#maxFuelVolume = fuelVolume;
   }
-  set fuelConsumption(fuelConsumption) {
-    if (!(Number.isFinite(fuelConsumption) && fuelConsumption > 0)) {
+  set fuelConsumption(consumption) {
+    if (!(Number.isFinite(consumption) && consumption > 0)) {
       throw new Error('Invalid fuel consumption');
     }
-    this.#fuelConsumption = fuelConsumption;
+    this.#fuelConsumption = consumption;
   }
   set damage(damage) {
     if (!(Number.isFinite(damage) && damage >= 1 && damage <= 5)) {
@@ -274,13 +273,19 @@ class Car {
     const estimateEndFuelAmount = () => {
       return this.#currentFuelVolume - (this.#fuelConsumption / 100 * speed * hours);
     }
-    if (this.#currentFuelVolume === 0 || estimateEndFuelAmount() < 0) {
+    const isNotEnoughFuel = () => {
+      return this.#currentFuelVolume === 0 || estimateEndFuelAmount() < 0;
+    }
+    if (isNotEnoughFuel()) {
       throw new Error('You don\'t have enough fuel');
     }
     const estimateEndHealthValue = () => {
       return this.#health - (this.#damage / 100 * speed * hours);
     }
-    if (this.#health === 0 || estimateEndHealthValue() <= 0) {
+    const isNotEnoughHealth = () => {
+      return this.#health === 0 || estimateEndHealthValue() <= 0;
+    }
+    if (isNotEnoughHealth()) {
       throw new Error('Your car won\'t make it');
     }
     const estimateMileage = () => {
@@ -294,13 +299,19 @@ class Car {
     if (this.#isStarted) {
       throw new Error('You have to shut down your car first');
     }
-    if (this.#currentFuelVolume !== this.#maxFuelVolume) {
+    const isNotFullGasTank = () => {
+      return this.#currentFuelVolume !== this.#maxFuelVolume;
+    }
+    if (isNotFullGasTank()) {
       throw new Error(`You have to fill up your gas tank first`);
     }
     this.#health = 100;
   }
   getFullAmount() {
-    if (this.#currentFuelVolume === this.#maxFuelVolume) {
+    const isFullGasTank = () => {
+      return this.#currentFuelVolume === this.#maxFuelVolume;
+    }
+    if (isFullGasTank()) {
       return 0;
     }
     return this.#maxFuelVolume - this.#currentFuelVolume;
