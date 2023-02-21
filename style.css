@@ -100,10 +100,10 @@
 .equal-sign {
     grid-area: equal-sign;
 }
-.reverse-sign {
+.invert-sign {
     grid-area: reverse-sign;
 }
-.delete-sign {
+.backspace-sign {
     grid-area: delete-sign;
 }
 .double-zero-sign {
