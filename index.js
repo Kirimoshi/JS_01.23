@@ -17,7 +17,6 @@ const checkOperationType = (target, output) => {
     return 'equal';
   }
 }
-
 const execOperation = (operationType, output, event) => {
   switch (operationType) {
     case 'clear':
@@ -39,7 +38,6 @@ const execOperation = (operationType, output, event) => {
       return;
   }
 }
-
 const performArithmeticOperation = (event, output) => {
   if (isDone(output) && !isEmpty(output)) {
     output.value += event.target.textContent;
@@ -51,7 +49,6 @@ const performArithmeticOperation = (event, output) => {
     output.value += event.target.textContent;
   }
 }
-
 const isLastSymbolArithmeticOperator = (output) => {
   return /[+*\/-]/.test(output.value.at(-1));
 }
@@ -78,52 +75,65 @@ const parse = (output) => {
     rightOperand,
   }
 }
-const calculate = (parsedObj) => {
+const isDividableByZero = (parsedObj) => {
+  const { rightOperand } = parsedObj;
+  return rightOperand !== 0;
+}
+const showErrorDivByZero = (output) => {
+  const prevOutputValue = output.value;
+  output.style.color = 'red';
+  output.value = 'ERROR';
+  setTimeout(() => {
+    output.value = prevOutputValue;
+    output.style.color = 'black';
+  }, 1000);
+  return output.value;
+}
+const calculate = (parsedObj, output) => {
   const { operator, leftOperand, rightOperand } = parsedObj;
   switch (operator) {
     case '/':
-      return (leftOperand / rightOperand).toFixed(8);
+      if (isDividableByZero(parsedObj)) {
+        return parseFloat((leftOperand / rightOperand).toFixed(8)).toString();
+      }
+      return showErrorDivByZero(output);
     case '*':
-      return (leftOperand * rightOperand).toFixed(8);
+      return parseFloat((leftOperand * rightOperand).toFixed(8)).toString();
     case '-':
-      return (leftOperand - rightOperand).toFixed(8);
+      return parseFloat((leftOperand - rightOperand).toFixed(8)).toString();
     case '+':
-      return (leftOperand + rightOperand).toFixed(8);
+      return parseFloat((leftOperand + rightOperand).toFixed(8)).toString();
     default:
       return;
   }
 }
 
 const isDone = (output) => {
-   return !(/[+*\/-]/.test(output.value));
+  if ( /^-/.test(output.value) ) {
+    return !/[+*\/-]/gm.test(output.value.slice(1));
+  } else if ( /[+*\/-]/gm.test(output.value) ) {
+    return false;
+  }
+  return true;
 }
-
 const clear = (output) => {
   output.value = '';
 }
 const invert = (output) => {
-  if (Number(output.value) === 0) {
-
-  } else if (Number(output.value) > 0) {
-    output.value = '-'.concat(output.value);
-  } else if (Number(output.value) < 0) {
-    output.value = output.value.slice(1);
-  }
+  output.value = (-output.value).toString();
 }
 const backspace = (output) => {
   output.value = output.value.slice(0, -1);
 }
-
 const isValidParsedObj = (parsedObj) => {
   const { operator, leftOperand, rightOperand } = parsedObj;
   return !(rightOperand === null || rightOperand === undefined || operator === null || operator === undefined ||
     leftOperand === null || leftOperand === undefined);
 }
-
 const equal = (output) => {
   const parsedObj = parse(output);
   if (isValidParsedObj(parsedObj)) {
-    output.value = calculate(parsedObj);
+    output.value = calculate(parsedObj, output);
   }
 }
 
